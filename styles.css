@@ -1,0 +1,12 @@
+body {
+	margin: 50px;
+	font: monospace;
+	font-size: 30px;
+}
+
+#canvas {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    z-index: -2;
+}
