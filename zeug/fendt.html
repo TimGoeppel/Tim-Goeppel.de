@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+	    <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fendt | Tim-Goeppel.de</title>
+        <meta name="author" content="Tim Göppel">
+        <meta name="description" content="Fendt">
+        <meta property="og:title" content="Tim Göppel">
+        <meta property="og:description" content="Fendt">
+		<script type="text/javascript" src="p5.min.js"></script>
+		<script type="text/javascript">
+		var x = 0, y = 0;
+		var speed = 8, fall = 10;
+		var fendt;
+		var right = 0;
+		var ground;
+		var jump = 0;
+
+		function setup() {
+			createCanvas(window.innerWidth, window.innerHeight);
+			fendt = loadImage("fendt.png");
+			fill(0);
+			textSize(50);
+			imageMode(CENTER);
+			ground = height * 0.9 - 78;
+		}
+
+		function draw() {
+			background(255);
+			ground = height * 0.9 - 78;
+			text("Fendt Simulator", 0, 50);
+			rect(0, height * 0.9, width, height / 10);
+			if(mouseX > x) {
+				x += Math.min(mouseX - x, speed);
+				right = true;
+			} else if(mouseX < x) {
+				x -= Math.min(x - mouseX, speed);
+				right = false;
+			}
+			if(y < ground) {
+				// Entschuldigung
+				y = Math.min(y + fall, ground);
+			}
+			if(jump > 0) {
+				y -= jump--;
+			}
+			if(right) {
+				scale(-1, 1);
+				image(fendt, -x, y, 300, 162);
+			} else {
+				image(fendt, x, y, 300, 162);
+			}
+		}
+
+		function performJump() {
+			if(y >= ground)
+				jump = 25;
+		}
+	
+		function keyPressed() {
+			if(key == ' ')
+				performJump();
+		}
+
+		function mousePressed() {
+			performJump();
+		}
+		</script>
+	</head>
+	<body>
+		
+	</body>
+</html>
