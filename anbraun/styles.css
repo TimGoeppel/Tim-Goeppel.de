@@ -1,0 +1,31 @@
+body { font-family: verdana; margin: 0; background-color: LINEN; color: SADDLEBROWN; font-size: 18px; }
+
+header { text-align: center; padding: 20px; font-family: arial; font-size: 40px; font-weight: bold; }
+
+h1 { font-size: 32px; display: block; margin-top: 0.67em; margin-bottom: 0.67em; margin-left: 0; margin-right: 0; font-weight: bold; text-align: center; }
+
+h2 { font-size: 22px; display: block; margin-top: 0.83em; margin-bottom: 0.83em; margin-left: 0; margin-right: 0; font-weight: bold; }
+
+h3 { font-size: 13.28px; display: block; margin-top: 1em; margin-bottom: 1em; margin-left: 0; margin-right: 0; font-weight: bold; }
+
+section { margin: 50px; }
+
+.image { display: block; margin-left: auto; margin-right: auto; width: 400px; height: 400px; }
+
+.navbar { list-style-type: none; margin: 0; padding: 0; margin-left: 0; margin-right: 0; overflow: hidden; background-color: CHOCOLATE; }
+
+.navbar-item { float: left; }
+
+.navbar-item a { display: block; color: LightGrey; text-align: center; padding: 14px 18px; text-decoration: none; background-color: CHOCOLATE; }
+
+.navbar-item a:hover { color: #e6e6e6; }
+
+.navbar-item-selected a:hover { color: White; }
+
+.navbar-item-main a { font-size: 110%; color: White; }
+
+.navbar-item-selected a { color: White; }
+
+.navbar .icon { display: none; }
+
+@media screen and (max-width: 740px) { ul.navbar li.right, ul.navbar li { float: none; } }
