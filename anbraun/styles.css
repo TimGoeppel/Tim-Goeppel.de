@@ -10,7 +10,7 @@ h3 { font-size: 13.28px; display: block; margin-top: 1em; margin-bottom: 1em; ma
 
 section { margin: 50px; }
 
-.image { display: block; margin-left: auto; margin-right: auto; width: 400px; height: 400px; }
+.image { display: block; margin-left: auto; margin-right: auto; width: 400px; }
 
 .navbar { list-style-type: none; margin: 0; padding: 0; margin-left: 0; margin-right: 0; overflow: hidden; background-color: CHOCOLATE; }
 
