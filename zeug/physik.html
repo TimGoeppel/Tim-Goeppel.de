@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+	    <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> Physik | Tim-Goeppel.de</title>
+        <meta name="author" content="Tim Göppel">
+        <meta name="description" content="Physik">
+        <meta property="og:title" content="Tim Göppel">
+        <meta property="og:description" content="Physik">
+		<script type="text/javascript" src="p5.min.js"></script>
+		<script type="text/javascript">
+const xSpalt = 250,
+  ySpalt1 = 150,
+  ySpalt2 = 350,
+  hoeheSpalt = 80;
+let punkte;
+let startet = false;
+
+function setup() {
+  createCanvas(500, 500);
+  strokeWeight(10);
+  initPunkte(10);
+  const start = createButton("Start");
+  start.position(0, height);
+  start.mousePressed((e) => {
+    startet = true;
+  });
+  const stopp = createButton("Stopp");
+  stopp.position(50, height);
+  stopp.mousePressed((e) => {
+    startet = false;
+  });
+  const neustarten = createButton("Neustarten");
+  neustarten.position(107, height);
+  neustarten.mousePressed((e) => {
+    for (let i = 0; i < len; i++) {
+      punkte[i].x = 6;
+      punkte[i].y = (height / len) * (i + 0.5);
+    }
+  });
+  const plus = createButton("+");
+  plus.position(194, height);
+  plus.mousePressed((e) => initPunkte(punkte.length + 1));
+  const minus = createButton("-");
+  minus.position(225, height);
+  minus.mousePressed((e) => initPunkte(max(punkte.length - 1, 1)));
+}
+
+function draw() {
+  background(220);
+  stroke(0);
+  line(xSpalt, 0, xSpalt, ySpalt1);
+  line(xSpalt, ySpalt1 + hoeheSpalt, xSpalt, ySpalt2);
+  line(xSpalt, ySpalt2 + hoeheSpalt, xSpalt, height);
+  stroke(255, 255, 0);
+  for (let punkt of punkte) {
+    point(punkt.x, punkt.y);
+    if (
+      startet &&
+      punkt.x < width - 6 &&
+      (punkt.x < xSpalt - 10 || punkt.gehtDurchSpalt)
+    )
+      punkt.x++;
+  }
+}
+
+function initPunkte(anzahl) {
+  punkte = new Array(anzahl);
+  for (let i = 0; i < anzahl; i++) {
+    let y = (height / anzahl) * (i + 0.5);
+    punkte[i] = {
+      x: 6,
+      y: y,
+      gehtDurchSpalt:
+        (y > ySpalt1 && y < ySpalt1 + hoeheSpalt) ||
+        (y > ySpalt2 && y < ySpalt2 + hoeheSpalt),
+    };
+  }
+}
+		</script>
+	</head>
+	<body>
+		
+	</body>
+</html>
