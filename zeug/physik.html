@@ -60,9 +60,10 @@ function draw() {
     if (
       startet &&
       punkt.x < width - 6 &&
-      (punkt.x < xSpalt - 10 || punkt.gehtDurchSpalt)
-    )
-      punkt.x++;
+      punkt.x > 5
+    ) {
+      if(punkt.x > xSpalt - 10 && !punkt.gehtDurchSpalt) punkt.v *= -1;
+      punkt.x += punkt.v;
   }
 }
 
@@ -76,6 +77,7 @@ function initPunkte(anzahl) {
       gehtDurchSpalt:
         (y > ySpalt1 && y < ySpalt1 + hoeheSpalt) ||
         (y > ySpalt2 && y < ySpalt2 + hoeheSpalt),
+      v: 1
     };
   }
 }
