@@ -33,13 +33,7 @@ function setup() {
   });
   const neustarten = createButton("Neustarten");
   neustarten.position(107, height);
-  neustarten.mousePressed((e) => {
-    let len = punkte.length;
-    for (let i = 0; i < len; i++) {
-      punkte[i].x = 6;
-      punkte[i].y = (height / len) * (i + 0.5);
-    }
-  });
+  neustarten.mousePressed((e) => initPunkte(punkte.length));
   const plus = createButton("+");
   plus.position(194, height);
   plus.mousePressed((e) => initPunkte(punkte.length + 1));
