@@ -10,62 +10,75 @@
         <meta property="og:description" content="Fendt">
 		<script type="text/javascript" src="p5.min.js"></script>
 		<script type="text/javascript">
-		var x = 0, y = 0;
-		var speed = 8, fall = 10;
-		var fendt;
-		var right = 0;
-		var ground;
-		var jump = 0;
+var x = 1000, y = 0;
+var speed = 8, fall = 10;
+var fendt;
+var jump = 0;
+var terrain = [];
+var terrainWidth = 5;
 
-		function setup() {
-			createCanvas(window.innerWidth, window.innerHeight);
-			fendt = loadImage("fendt.png");
-			fill(0);
-			textSize(50);
-			imageMode(CENTER);
-			ground = height * 0.9 - 78;
-		}
+function setup() {
+  createCanvas(window.innerWidth, window.innerHeight);
+  fendt = loadImage(
+    "https://raw.githubusercontent.com/TimGoeppel/tim-goeppel.de/main/zeug/fendt.png"
+  );
+  fill(0);
+  textSize(50);
+  imageMode(CENTER);
+}
 
-		function draw() {
-			background(255);
-			ground = height * 0.9 - 78;
-			text("Fendt Simulator", 0, 50);
-			rect(0, height * 0.9, width, height / 10);
-			if(mouseX > x) {
-				x += Math.min(mouseX - x, speed);
-				right = true;
-			} else if(mouseX < x) {
-				x -= Math.min(x - mouseX, speed);
-				right = false;
-			}
-			if(y < ground) {
-				// Entschuldigung
-				y = Math.min(y + fall, ground);
-			}
-			if(jump > 0) {
-				y -= jump--;
-			}
-			if(right) {
-				scale(-1, 1);
-				image(fendt, -x, y, 300, 162);
-			} else {
-				image(fendt, x, y, 300, 162);
-			}
-		}
+function draw() {
+  background(255);
+  text("Fendt Simulator", 0, 50);
+  let s = Math.min(speed, Math.max(-speed, mouseX - width / 2));
+  if((s + x) > 0 && getGround(s + x) >= y) {
+    x += s;
+  }
+  const ground = getGround(x);
+  if (y < ground) {
+    // Entschuldigung
+    y = Math.min(y + fall, ground);
+  }
+  if (jump > 0) {
+    y -= jump--;
+  }
+  drawBackground();
+  if (s > 0) {
+    scale(-1, 1);
+    image(fendt, -width/2, y - fendt.height / 2, 300, 162);
+  } else {
+    image(fendt, width/2, y - fendt.height / 2, 300, 162);
+  }
+}
 
-		function performJump() {
-			if(y >= ground)
-				jump = 25;
-		}
-	
-		function keyPressed() {
-			if(key == ' ')
-				performJump();
-		}
+function getGround(s) {
+  let a = terrain.slice(floor((s - fendt.width / 2) / terrainWidth), floor((s + fendt.width / 2) / terrainWidth)).filter(e=>isFinite(e));
+  return height - Math.min(...a);
+}
 
-		function mousePressed() {
-			performJump();
-		}
+function performJump() {
+  if (y >= getGround(x)) jump = 25;
+}
+
+function keyPressed() {
+  if (key == " ") performJump();
+}
+
+function mousePressed() {
+  performJump();
+}
+
+function drawBackground() {
+  for(let i = floor(x / terrainWidth); i < (width + x) / terrainWidth; i++) {
+    let h = terrain[i];
+    if(!h) {
+      h = noise(i / 100) * height/2;
+      terrain[i] = h;
+    }
+    rect(i * terrainWidth - x, height - h, terrainWidth, h);
+  }
+}
+
 		</script>
 	</head>
 	<body>
