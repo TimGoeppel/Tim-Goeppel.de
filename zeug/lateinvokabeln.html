@@ -42,8 +42,10 @@ function onChangeSettings(select) {
 // Memory (of vocabulary)
 // Even indices contain how many times the translation of a word was remembered, the odd ones contain the cases in which they were not remembered.
 // The pairs alternate between Latin and German (i.e. 0: how often the translation of the Latin word was known, 1: how often it was not known, 2: how often the translation of the German word was known, 3: how often it was not known)
-let memory = localStorage.getItem("memory").split(",");
-if(!Array.isArray(memory)) {
+let memory = localStorage.getItem("memory");
+if(typeof memory == "string") {
+	memory = memory.split(",");
+} else {
 	memory = [];
 	localStorage.setItem("memory", memory);
 }
