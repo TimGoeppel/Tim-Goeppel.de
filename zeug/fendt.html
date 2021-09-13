@@ -1,87 +1,109 @@
 <!DOCTYPE html>
 <html lang="de">
-	<head>
-	    <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Fendt | Tim-Goeppel.de</title>
-        <meta name="author" content="Tim Göppel">
-        <meta name="description" content="Fendt">
-        <meta property="og:title" content="Tim Göppel">
-        <meta property="og:description" content="Fendt">
-		<script type="text/javascript" src="p5.min.js"></script>
-		<script type="text/javascript">
-var x = 1000, y = 0;
-var speed = 8, fall = 10;
-var fendt;
-var jump = 0;
-var terrain = [];
-var terrainWidth = 5;
 
-function setup() {
-  createCanvas(window.innerWidth, window.innerHeight);
-  fendt = loadImage(
-    "https://raw.githubusercontent.com/TimGoeppel/tim-goeppel.de/main/zeug/fendt.png"
-  );
-  fill(0);
-  textSize(50);
-  imageMode(CENTER);
-}
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Fendt | Tim-Goeppel.de</title>
+	<meta name="author" content="Tim Göppel">
+	<meta name="description" content="Fendt">
+	<meta property="og:title" content="Tim Göppel">
+	<meta property="og:description" content="Fendt">
+	<script type="text/javascript" src="p5.min.js"></script>
+	<script type="text/javascript">
+		var fall = 10;
+		const fendt = {
+			x: 0,
+			y: 0,
+			jump: 0,
+			speed: 8,
+			image: undefined
+		};
+		const terrain = {
+			data: [],
+			width: 5,
+			getAt: function (xCoord) {
+				const index = this.toIndex(xCoord);
+				let t = this.data[index];
+				if (!t) {
+					t = (noise(xCoord / this.width / 100) + 1) * (height / 2);
+					this.data[index] = t;
+				}
+				return t;
+			},
+			toIndex: function (xCoord) {
+				return floor((xCoord < 0 ? 1 - (xCoord * 2) : xCoord * 2) / this.width);
+			},
+			toXCoord: function (index) {
+				return (index % 2 ? (1 - index) / 2 : index / 2) * this.width;
+			}
+		};
 
-function draw() {
-  background(255);
-  text("Fendt Simulator", 0, 50);
-  let s = Math.min(speed, Math.max(-speed, mouseX - width / 2));
-  if((s + x) > 0 && getGround(s + x) >= y) {
-    x += s;
-  }
-  const ground = getGround(x);
-  if (y < ground) {
-    // Entschuldigung
-    y = Math.min(y + fall, ground);
-  }
-  if (jump > 0) {
-    y -= jump--;
-  }
-  drawBackground();
-  if (s > 0) {
-    scale(-1, 1);
-    image(fendt, -width/2, y - fendt.height / 2, 300, 162);
-  } else {
-    image(fendt, width/2, y - fendt.height / 2, 300, 162);
-  }
-}
+		function setup() {
+			createCanvas(window.innerWidth - 20, window.innerHeight - 20);
+			fendt.image = loadImage("fendt.png");
+			fill(0);
+			textSize(50);
+			imageMode(CENTER);
+			ellipseMode(CORNER);
+		}
 
-function getGround(s) {
-  let a = terrain.slice(floor((s - fendt.width / 2) / terrainWidth), floor((s + fendt.width / 2) / terrainWidth)).filter(e=>isFinite(e));
-  return height - Math.min(...a);
-}
+		function draw() {
+			background(255);
+			text("Fendt Simulator", 0, 50);
+			const deltaX = Math.min(fendt.speed, Math.max(-fendt.speed, mouseX - width / 2));
+			let ground = getGround(fendt.x + deltaX);
+			if ((ground + 5) >= fendt.y) {
+				fendt.x += deltaX;
+				fendt.y = Math.min(ground, fendt.y);
+			}
+			ground = getGround(fendt.x);
+			if (fendt.y < ground) {
+				// Entschuldigung
+				fendt.y = Math.min(fendt.y + fall, ground);
+			}
+			if (fendt.jump > 0) {
+				fendt.y -= fendt.jump--;
+			}
+			drawBackground();
+			if (deltaX > 0) {
+				scale(-1, 1);
+				image(fendt.image, -width / 2, fendt.y - 81, 300, 162);
+			} else {
+				image(fendt.image, width / 2, fendt.y - 81, 300, 162);
+			}
+		}
 
-function performJump() {
-  if (y >= getGround(x)) jump = 25;
-}
+		function getGround(xCoord) {
+			return Math.min(terrain.getAt(xCoord - 81), terrain.getAt(xCoord), terrain.getAt(xCoord + 81));
+		}
 
-function keyPressed() {
-  if (key == " ") performJump();
-}
+		function performJump() {
+			if (fendt.y >= getGround(fendt.x)) fendt.jump = 25;
+		}
 
-function mousePressed() {
-  performJump();
-}
+		function keyPressed() {
+			if (key == " ") performJump();
+		}
 
-function drawBackground() {
-  for(let i = floor(x / terrainWidth); i < (width + x) / terrainWidth; i++) {
-    let h = terrain[i];
-    if(!h) {
-      h = noise(i / 100) * height/2;
-      terrain[i] = h;
-    }
-    rect(i * terrainWidth - x, height - h, terrainWidth, h);
-  }
-}
+		function mousePressed() {
+			performJump();
+		}
 
-		</script>
-	</head>
-	<body>
-		
-	</body>
+		function drawBackground() {
+			for (let i = -width / 2; i < (width / 2); i += terrain.width) {
+				const h = terrain.getAt(i + fendt.x);
+				fill(0);
+				stroke(0);
+				rect(i + width / 2, h, terrain.width, h); // TODO: Perhaps not use rectangles here because it looks a bit ugly
+			}
+		}
+
+	</script>
+</head>
+
+<body>
+
+</body>
+
 </html>
