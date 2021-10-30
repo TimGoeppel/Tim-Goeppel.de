@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+	    <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mathein | Tim-Goeppel.de</title>
+        <meta name="author" content="Tim Göppel">
+        <meta name="description" content="Mathein">
+        <meta name="keywords" content="Tim Göppel, Mathein">
+        <meta property="og:title" content="Mathein | Tim Göppel">
+        <meta property="og:description" content="Mathein">
+		<style>
+		.toggler {
+			display: none;
+		}
+
+		.toggler+.toggler-content {
+			max-height: 0;
+			opacity: 0;
+			overflow: hidden;
+			transition: all .4s ease-in-out;
+		}
+
+		.toggler:checked+.toggler-content {
+			max-height: 1000px;
+			opacity: 1;
+		}
+		</style>
+	</head>
+	<body>
+		<h1>Das Mathein - ein ganz unbesonderes Alkin</h1>
+		<p><i>- oder der Grund, warum ich Chemie abgewählt habe</i></p>
+		<p style="font-family: Garamond; font-size: 350%;">C<sub>892010</sub>H<sub>1784018</sub></p>
+		<p><i>Die Summenformel des Matheins</i></p>
+		
+		<div>
+			<label for="toggler-id-1"><u>Die Geschichte der Entdeckung des Matheins</u></label>
+			<input type="checkbox" id="toggler-id-1" class="toggler" />
+			<img class="toggler-content" src="mathein.jpg" alt="Chatverlauf zwischen Benedikt D. und mir über das Mathein" width="910" height="967">
+		</div>
+		<br>
+		<div>
+			<label for="toggler-id-2"><u>Die Berechnung des Matheins</u></label>
+			<input type="checkbox" id="toggler-id-2" class="toggler" />
+			<pre class="toggler-content">c: Anzahl C-Atome
+h: Anzahl H-Atome
+x: Anzahl Dreifachbindungen zwischen den C-Atomen
+y: Anzahl Doppelbindungen zwischen den C-Atomen
+z: Anzahl Einfachbindungen zwischen den C-Atomen
+
+c > 2
+x > 0
+c, h, x, y, z ∈ ℕ₀
+
+Anzahl der möglichen Gesamtverbindungen muss Summe der Bindungen sein
+(I) 4c = h + 6x + 4y + 2z
+
+Wenn das Molekül nicht zyklisch sein soll, müssen genauso viele Bindungen existieren wie C-Atome minus 1
+(II) c - 1 = x + y + z
+(II') y = c - 1 - x - z
+
+(I) - 4 * (II):
++ 4 = h + 2x - 2z | - 4 + 2z
+2z = 2x + h - 4 | : 2
+(III) z = x + h:2 - 2
+
+(II') in (I) einsetzen:
+4c = h + 6x + 4(c - 1 - x - z) + 2z
+4c = h + 6x + 4c - 4 - 4x - 4z + 2z | - 4c
+0 = h + 6x - 4x - 4 - 4z + 2z
+0 = h + 2x - 4 - 2z | : 2 | + z
+(IV) z = x - 2 + h:2
+
+Maximal für jedes zweite C-Atom kann es eine Dreifachbindung geben
+(V) x ≤ c:2
+
+0 ≤ y
+(II') einsetzen:
+0 ≤ c - 1 - x - z | + x
+x ≤ c - 1 - z
+(III) einsetzen:
+x ≤ c - 1 - (x + h:2 - 2)
+x ≤ c - 1 - x - h:2 + 2 | + x
+2x ≤ c + 1 - h:2 | : 2
+(VI) x ≤ c:2 + 0,5 - h:4
+
+c = 892010; h = 1784018
+x maximal werden lassen => in (V) und (VI) einsetzen und niedrigstes Ergebnis verwenden
+c in (V) einsetzen:
+x ≤ 892010 : 2
+x ≤ 446005
+
+c, h in (VI) einsetzen:
+x ≤ 892010:2 + 0,5 - 1784018:4
+x ≤ 446005 + 0,5 - 446004,5
+x ≤ 1
+
+1 < 446005
+=> x = 1 (tatsächlich einziges mögliches Ergebnis, da x natürlich und größer 0 sein muss)
+in (IV) einsetzen:
+z = x + h:2 - 2 = 1 + 892009 - 2 = 892008
+in (II') einsetzen:
+y = c - 1 - x - z = 892010 - 1 - 1 - 892008 = 0
+
+=> eine Dreifachbindung, 892008 Einfachbindungen
+
+mögliche Halbstrukturformel:
+H₃C-C≡C-(CH₃)₈₉₂₀₀₆-CH₃</pre>
+		</div>
+		<br>
+		<div>
+			<label for="toggler-id-3"><u>Die vollständige Formel</u></label>
+			<input type="checkbox" id="toggler-id-3" class="toggler" onchange="console.log('Das wird jetzt lustig.');document.getElementById('formel').innerHTML='H<sub>3</sub>C&#8801;C'+'-CH<sub>2</sub>'.repeat(892010)+'-CH<sub>3</sub>';" />
+			<p class="toggler-content" id="formel">Formel momentan nicht verfügbar</p>
+		</div>
+	</body>
+</html>
