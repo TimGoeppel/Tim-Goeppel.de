@@ -56,13 +56,6 @@
 		function draw() {
 			background(255);
 			text("Fendt Simulator", 0, titleSize[0]);
-			if(fendt.image == 1 || fendt.image == 2) {
-				textSize(5);
-				fill(150);
-				text("Bildquellen: https://i.pinimg.com/originals/02/63/cb/0263cb36adc2fbb5433e26b2b12ee3ee.png; https://i.pinimg.com/originals/02/63/cb/0263cb36adc2fbb5433e26b2b12ee3ee.png", 0, height - 6); 
-				fill(0);
-				textSize(titleSize[0]);
-			}
 			const deltaX = Math.min(fendt.speed, Math.max(-fendt.speed, mouseX - width / 2));
 			let ground = getGround(fendt.x + deltaX);
 			if ((ground + 5) >= fendt.y) {
@@ -109,7 +102,14 @@
 				const h = terrain.getAt(i + fendt.x);
 				fill(0);
 				stroke(0);
-				rect(i + width / 2, h, terrain.width, h); // TODO: Perhaps not use rectangles here because it looks a bit ugly
+				rect(i + width / 2, h, terrain.width, h);
+			}
+			if(fendt.image == 1 || fendt.image == 2) {
+				push();
+				textSize(8);
+				fill(150);
+				text("Bildquellen: https://i.pinimg.com/originals/02/63/cb/0263cb36adc2fbb5433e26b2b12ee3ee.png\n;https://i.pinimg.com/originals/02/63/cb/0263cb36adc2fbb5433e26b2b12ee3ee.png", 0, height - 16);
+				pop();
 			}
 		}
 
