@@ -17,7 +17,7 @@
 			y: 0,
 			jump: 0,
 			speed: 8,
-			image: undefined
+			image: 0
 		};
 		const terrain = {
 			data: [],
@@ -38,19 +38,29 @@
 				return (index % 2 ? (1 - index) / 2 : index / 2) * this.width;
 			}
 		};
+		const images = ["fendt.png", "fendtabgase.png", "fendtregenbogen.png"];
+		const titleSize = [50, 0];
 
 		function setup() {
 			createCanvas(window.innerWidth - 20, window.innerHeight - 20);
-			fendt.image = loadImage("fendt.png");
+			for(let i = 0; i < images.length; i++) {
+				images[i] = loadImage(images[i]);
+			}
 			fill(0);
-			textSize(50);
+			textSize(titleSize[0]);
+			titleSize[1] = textWidth("Fendt Simulator");
 			imageMode(CENTER);
 			ellipseMode(CORNER);
 		}
 
 		function draw() {
 			background(255);
-			text("Fendt Simulator", 0, 50);
+			text("Fendt Simulator", 0, titleSize[0]);
+			if(fendt.image == 1 || fendt.image == 2) {
+				textSize(5);
+				text("Bildquellen: https://i.pinimg.com/originals/02/63/cb/0263cb36adc2fbb5433e26b2b12ee3ee.png; https://i.pinimg.com/originals/02/63/cb/0263cb36adc2fbb5433e26b2b12ee3ee.png", 0, height - 6); 
+				textSize(titleSize[0]);
+			}
 			const deltaX = Math.min(fendt.speed, Math.max(-fendt.speed, mouseX - width / 2));
 			let ground = getGround(fendt.x + deltaX);
 			if ((ground + 5) >= fendt.y) {
@@ -68,9 +78,9 @@
 			drawBackground();
 			if (deltaX > 0) {
 				scale(-1, 1);
-				image(fendt.image, -width / 2, fendt.y - 81, 300, 162);
+				image(images[fendt.image], -width / 2, fendt.y - 81, 300, 162);
 			} else {
-				image(fendt.image, width / 2, fendt.y - 81, 300, 162);
+				image(images[fendt.image], width / 2, fendt.y - 81, 300, 162);
 			}
 		}
 
@@ -87,7 +97,9 @@
 		}
 
 		function mousePressed() {
-			performJump();
+			if(mouseX > 0 && mouseX < titleSize[1] && mouseY > titleSize[0] && mouseY < (titleSize[0] * 2)) {
+				fendt.image = min(images.length - 1, fendt.image + 1);
+			} else performJump();
 		}
 
 		function drawBackground() {
