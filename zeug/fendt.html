@@ -58,7 +58,9 @@
 			text("Fendt Simulator", 0, titleSize[0]);
 			if(fendt.image == 1 || fendt.image == 2) {
 				textSize(5);
+				fill(150);
 				text("Bildquellen: https://i.pinimg.com/originals/02/63/cb/0263cb36adc2fbb5433e26b2b12ee3ee.png; https://i.pinimg.com/originals/02/63/cb/0263cb36adc2fbb5433e26b2b12ee3ee.png", 0, height - 6); 
+				fill(0);
 				textSize(titleSize[0]);
 			}
 			const deltaX = Math.min(fendt.speed, Math.max(-fendt.speed, mouseX - width / 2));
@@ -97,8 +99,8 @@
 		}
 
 		function mousePressed() {
-			if(mouseX > 0 && mouseX < titleSize[1] && mouseY > titleSize[0] && mouseY < (titleSize[0] * 2)) {
-				fendt.image = min(images.length - 1, fendt.image + 1);
+			if(mouseX > 0 && mouseX < titleSize[1] && mouseY > 0 && mouseY < (titleSize[0] * 1.5)) {
+				fendt.image = (fendt.image == (images.length - 1)) ? 0 : fendt.image + 1;
 			} else performJump();
 		}
 
