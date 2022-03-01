@@ -44,22 +44,23 @@
 			{
 				name: "Fendt",
 				files: [
-					["Fendt Vario 824", "https://www.instagram.com/p/Bzq0SyZHBD8/", "https://cdn.discordapp.com/attachments/782170079848169482/947427566065704980/65612248_370283373675709_4945308782104190805_n.jpg"],
-					["Fendt Vario 926", "https://www.instagram.com/p/CZ2G1MwD9l1/", "https://cdn.discordapp.com/attachments/782170079848169482/947427948057739314/273698007_544333253322656_448523926266736555_n.jpg"],
-					["Fendt Favorit 615 LSA", "https://www.instagram.com/p/CZmztjOqAWp/", "https://cdn.discordapp.com/attachments/782170079848169482/947428262643118130/273159618_520378836039481_4817622854835806650_n.webp"],
-					["Fendt Favorit 612 LS", "https://www.instagram.com/p/CY3s2m5KvyU/", "https://cdn.discordapp.com/attachments/782170079848169482/947428891163787304/unknown.png"]
+					["Fendt Fix 1", "", "png"],
+					["Fendt Vario 824", "https://www.instagram.com/p/Bzq0SyZHBD8/", "jpg"],
+					["Fendt Vario 926", "https://www.instagram.com/p/CZ2G1MwD9l1/", "jpg"],
+					["Fendt Favorit 615 LSA", "https://www.instagram.com/p/CZmztjOqAWp/", "jpg"],
+					["Fendt Favorit 612 LS", "https://www.instagram.com/p/CY3s2m5KvyU/", "png"]
 				]
 			},
 			{
 				name: "Deutz",
 				files: [
-					["Deutz-Fahr Agrotron M620", "https://www.instagram.com/p/CR6IpjYHxYY/", "https://cdn.discordapp.com/attachments/782170079848169482/947429223994388530/226238842_995184414628180_4752527085682267308_n.jpg"]
+					["Deutz-Fahr Agrotron M620", "https://www.instagram.com/p/CR6IpjYHxYY/", "jpg"]
 				]
 			},
 			{
 				name: "Schlüter",
 				files: [
-					["Deutz-Fahr Agrotron M620", "https://www.instagram.com/p/CR6IpjYHxYY/", "https://cdn.discordapp.com/attachments/782170079848169482/947429223994388530/226238842_995184414628180_4752527085682267308_n.jpg"]
+					["Schlüter Super 1500 tvl special", "https://www.instagram.com/p/CG9-xW3HiML/", "jpg"]
 				]
 			},
 			{
@@ -74,14 +75,14 @@
 			createCanvas(window.innerWidth - 20, window.innerHeight - 20);
 			fill(0);
 			textSize(titleSize[0]);
-			titleSize[1] = textWidth("Fendt Simulator");
+			titleSize[1] = textWidth("\u201eFendt\u201d Simulator");
 			imageMode(CENTER);
 			ellipseMode(CORNER);
 		}
 
 		function draw() {
 			background(255);
-			text("\u201eFendt Simulator\u201d", 0, titleSize[0]);
+			text("\u201eFendt\u201d Simulator", 0, titleSize[0]);
 			if(stage == 0) {
 				const len = images.length;
 				const rectHeight = (height - 3 * titleSize[0]) / len;
@@ -110,7 +111,11 @@
 					const rectY = 1.5 * titleSize[0] + (height - 3 * titleSize[0]) * (i / len);
 					const rectWidth = width * 0.25;
 					rect(rectX, rectY, rectWidth, rectHeight);
-					image(imageCategory.files[i][3], rectX + rectWidth, rectY, rectWidth, rectHeight);
+					image(imageCategory.files[i][3], rectX + 1.5 * rectWidth, rectY + rectHeight / 2, rectWidth, rectHeight);
+					fill(100);
+					textSize(height / 100);
+					const source = imageCategory.files[i][1];
+					if(source) text("Quelle: " + source, rectX + 2 * rectWidth, rectY + rectHeight / 2);
 					pop();
 					text(imageCategory.files[i][0], rectX, rectY, rectWidth, rectHeight);
 				}
@@ -135,7 +140,12 @@
 					fendt.y -= fendt.jump--;
 				}
 				drawBackground();
-				
+				push();
+				fill(100);
+				textSize(height / 100);
+				const source = imageData[1];
+				if(source) text("Quelle: " + source, 0, 0.99 * height);
+				pop();
 				if (deltaX > 0) {
 					scale(-1, 1);
 					image(imageData[3], -width / 2, fendt.y - 81, 300, 162);
@@ -164,9 +174,11 @@
 				const index = getSelectedIndex(images.length);
 				if(index != -1) {
 					fendt.image[0] = index;
-					for(image of images[fendt.image[0]].files) {
-						if(image.length < 4) {
-							image[3] = loadImage(image[2]);
+					const files = images[fendt.image[0]].files;
+					for(var i = 0; i < files.length; i++) {
+						const img = files[i];
+						if(img.length < 4) {
+							img[3] = loadImage("images/" + fendt.image[0] + "_" + i + "." + img[2]);
 						}
 					}
 					stage = 1;
