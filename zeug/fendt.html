@@ -11,13 +11,15 @@
 	<meta property="og:description" content="Fendt">
 	<script type="text/javascript" src="p5.min.js"></script>
 	<script type="text/javascript">
+		var stage = 0;
+		
 		var fall = 10;
 		const fendt = {
 			x: 0,
 			y: 0,
 			jump: 0,
 			speed: 8,
-			image: 0
+			image: [0, 0]
 		};
 		const terrain = {
 			data: [],
@@ -38,14 +40,38 @@
 				return (index % 2 ? (1 - index) / 2 : index / 2) * this.width;
 			}
 		};
-		const images = ["fendt.png", "fendtabgase.png", "fendtregenbogen.png"];
+		const images = [
+			{
+				name: "Fendt",
+				files: [
+					["Fendt Vario 824", "https://www.instagram.com/p/Bzq0SyZHBD8/", "https://cdn.discordapp.com/attachments/782170079848169482/947427566065704980/65612248_370283373675709_4945308782104190805_n.jpg"],
+					["Fendt Vario 926", "https://www.instagram.com/p/CZ2G1MwD9l1/", "https://cdn.discordapp.com/attachments/782170079848169482/947427948057739314/273698007_544333253322656_448523926266736555_n.jpg"],
+					["Fendt Favorit 615 LSA", "https://www.instagram.com/p/CZmztjOqAWp/", "https://cdn.discordapp.com/attachments/782170079848169482/947428262643118130/273159618_520378836039481_4817622854835806650_n.webp"],
+					["Fendt Favorit 612 LS", "https://www.instagram.com/p/CY3s2m5KvyU/", "https://cdn.discordapp.com/attachments/782170079848169482/947428891163787304/unknown.png"]
+				]
+			},
+			{
+				name: "Deutz",
+				files: [
+					["Deutz-Fahr Agrotron M620", "https://www.instagram.com/p/CR6IpjYHxYY/", "https://cdn.discordapp.com/attachments/782170079848169482/947429223994388530/226238842_995184414628180_4752527085682267308_n.jpg"]
+				]
+			},
+			{
+				name: "Schlüter",
+				files: [
+					["Deutz-Fahr Agrotron M620", "https://www.instagram.com/p/CR6IpjYHxYY/", "https://cdn.discordapp.com/attachments/782170079848169482/947429223994388530/226238842_995184414628180_4752527085682267308_n.jpg"]
+				]
+			},
+			{
+				name: "Linder",
+				files: [
+				]
+			}
+		];
 		const titleSize = [50, 0];
 
 		function setup() {
 			createCanvas(window.innerWidth - 20, window.innerHeight - 20);
-			for(let i = 0; i < images.length; i++) {
-				images[i] = loadImage(images[i]);
-			}
 			fill(0);
 			textSize(titleSize[0]);
 			titleSize[1] = textWidth("Fendt Simulator");
@@ -55,27 +81,67 @@
 
 		function draw() {
 			background(255);
-			text("Fendt Simulator", 0, titleSize[0]);
-			const deltaX = Math.min(fendt.speed, Math.max(-fendt.speed, mouseX - width / 2));
-			let ground = getGround(fendt.x + deltaX);
-			if ((ground + 5) >= fendt.y) {
-				fendt.x += deltaX;
-				fendt.y = Math.min(ground, fendt.y);
-			}
-			ground = getGround(fendt.x);
-			if (fendt.y < ground) {
-				// Entschuldigung
-				fendt.y = Math.min(fendt.y + fall, ground);
-			}
-			if (fendt.jump > 0) {
-				fendt.y -= fendt.jump--;
-			}
-			drawBackground();
-			if (deltaX > 0) {
-				scale(-1, 1);
-				image(images[fendt.image], -width / 2, fendt.y - 81, 300, 162);
-			} else {
-				image(images[fendt.image], width / 2, fendt.y - 81, 300, 162);
+			text("\u201eFendt Simulator\u201d", 0, titleSize[0]);
+			if(stage == 0) {
+				const len = images.length;
+				const rectHeight = (height - 3 * titleSize[0]) / len;
+				const rectX = width * 0.25;
+				for(i = 0; i < len; i++) {
+					push();
+					fill(255); // TODO: Bunt!
+					const rectY = 1.5 * titleSize[0] + (height - 3 * titleSize[0]) * (i / len);
+					const rectWidth = width * 0.5;
+					rect(rectX, rectY, rectWidth, rectHeight);
+					pop();
+					text(images[i].name, rectX, rectY, rectWidth, rectHeight);
+				}
+			} else if(stage == 1) {
+				const imageCategory = images[fendt.image[0]];
+				push();
+				textSize(titleSize[0] / 2);
+				text(imageCategory.name, width - textWidth(imageCategory.name), titleSize[0] / 2);
+				pop();
+				const len = imageCategory.files.length;
+				const rectHeight = (height - 3 * titleSize[0]) / len;
+				const rectX = width * 0.25;
+				for(i = 0; i < len; i++) {
+					push();
+					fill(255); // TODO: Bunt!
+					const rectY = 1.5 * titleSize[0] + (height - 3 * titleSize[0]) * (i / len);
+					const rectWidth = width * 0.25;
+					rect(rectX, rectY, rectWidth, rectHeight);
+					image(imageCategory.files[i][3], rectX + rectWidth, rectY, rectWidth, rectHeight);
+					pop();
+					text(imageCategory.files[i][0], rectX, rectY, rectWidth, rectHeight);
+				}
+			} else if(stage == 2) {
+				const imageData = images[fendt.image[0]].files[fendt.image[1]];
+				push();
+				textSize(titleSize[0] / 2);
+				text(imageData[0], width - textWidth(imageData[0]), titleSize[0] / 2);
+				pop();
+				const deltaX = Math.min(fendt.speed, Math.max(-fendt.speed, mouseX - width / 2));
+				let ground = getGround(fendt.x + deltaX);
+				if ((ground + 5) >= fendt.y) {
+					fendt.x += deltaX;
+					fendt.y = Math.min(ground, fendt.y);
+				}
+				ground = getGround(fendt.x);
+				if (fendt.y < ground) {
+					// Entschuldigung
+					fendt.y = Math.min(fendt.y + fall, ground);
+				}
+				if (fendt.jump > 0) {
+					fendt.y -= fendt.jump--;
+				}
+				drawBackground();
+				
+				if (deltaX > 0) {
+					scale(-1, 1);
+					image(imageData[3], -width / 2, fendt.y - 81, 300, 162);
+				} else {
+					image(imageData[3], width / 2, fendt.y - 81, 300, 162);
+				}
 			}
 		}
 
@@ -88,13 +154,45 @@
 		}
 
 		function keyPressed() {
-			if (key == " ") performJump();
+			if(stage == 2) {
+				if (key == " ") performJump();
+			}
 		}
 
 		function mousePressed() {
-			if(mouseX > 0 && mouseX < titleSize[1] && mouseY > 0 && mouseY < (titleSize[0] * 1.5)) {
-				fendt.image = (fendt.image == (images.length - 1)) ? 0 : fendt.image + 1;
-			} else performJump();
+			if(stage == 0) {
+				const index = getSelectedIndex(images.length);
+				if(index != -1) {
+					fendt.image[0] = index;
+					for(image of images[fendt.image[0]].files) {
+						if(image.length < 4) {
+							image[3] = loadImage(image[2]);
+						}
+					}
+					stage = 1;
+				}
+			} else {
+				if(mouseX > 0 && mouseX < titleSize[1] && mouseY > 0 && mouseY < (titleSize[0] * 1.5)) {
+					stage = 0;
+				}
+				if(stage == 1) {
+					const index = getSelectedIndex(images[fendt.image[0]].files.length);
+					if(index != -1) {
+						fendt.image[1] = index;
+						stage = 2;
+					}
+				} else if(stage == 2) {
+					performJump();
+				}
+			}
+		}
+		
+		function getSelectedIndex(len) {
+			if(mouseX > (width * 0.25) && mouseX < (width * 0.75) && mouseY > titleSize[0] && mouseY < (height - 1.5 * titleSize[0])) {
+				return floor(((mouseY - 1.5 * titleSize[0]) / (height - 3 * titleSize[0])) * len);
+			} else {
+				return -1;
+			}
 		}
 
 		function drawBackground() {
@@ -103,13 +201,6 @@
 				fill(0);
 				stroke(0);
 				rect(i + width / 2, h, terrain.width, h);
-			}
-			if(fendt.image == 1 || fendt.image == 2) {
-				push();
-				textSize(8);
-				fill(150);
-				text("Bildquellen: https://www.fendt-oldtimer.de/index.php?thread/11785-farmer-3s-qualmt/;\nhttps://i.pinimg.com/originals/02/63/cb/0263cb36adc2fbb5433e26b2b12ee3ee.png", 0, height - 16);
-				pop();
 			}
 		}
 
