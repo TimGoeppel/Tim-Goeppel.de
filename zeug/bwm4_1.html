@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+	    <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> BWM Nr. 4 - 1 | Tim-Goeppel.de</title>
+        <meta name="author" content="Tim Göppel">
+        <meta name="description" content="Physik">
+        <meta property="og:title" content="Tim Göppel">
+        <meta property="og:description" content="Physik">
+		<script type="text/javascript" src="p5.min.js"></script>
+		<script type="text/javascript">
+let buttonP;
+let buttonMode;
+let buttonLength;
+
+function setup() {
+  createCanvas(displayWidth, displayHeight);
+  colorMode(HSL);
+  buttonP = addButton(0, 0, 30, 10, "", true, 250, function (mX, mY) {
+    if (this.p > 1 && mX < 40) this.p--;
+    else if (mX > 60) this.p++;
+  });
+  buttonP.p = 1;
+  buttonP.text = function () {
+    const toReturn = "p = " + this.p + " +";
+    if(this.p == 1) return toReturn;
+    else return "- " + toReturn;
+  };
+  
+  buttonMode = addButton(35, 0, 30, 10, "", true, 250, function(mX, mY) {
+    if(mX < 40) this.mode--;
+    else if(mX > 60) this.mode++;
+  });
+  buttonMode.mode = 0;
+  buttonMode.text = function() {
+    if(this.mode == 0) return "- Grid +";
+    else if(this.mode > 0) return "- Row " + int(this.mode) + " +";
+    else if(this.mode < 0) return "- Col " + int(-this.mode) + " +";
+  };
+  
+  buttonLength = addButton(70, 0, 30, 10, "", true, 250, function(mX, mY) {
+    if(this.length > 1 && mX < 40) this.length--;
+    else if(mX > 60) this.length++;
+  });
+  buttonLength.length = 1;
+  buttonLength.text = function() {
+    const toReturn = "length = " + str(buttonLength.length) + " +";
+    if(buttonLength.length == 1) return toReturn
+    else return "- " + toReturn;
+  };
+}
+
+function draw() {
+  background(255);
+  for (let button of buttons) {
+    if (button.active) {
+      fill(button.color);
+      rect(button.x(), button.y(), button.width(), button.height());
+      fill(0);
+      const bWidth = button.width();
+      textSize(bWidth / 6);
+      text(button.text(), button.x(), button.y(), bWidth, button.height());
+    }
+  }
+  const length = buttonLength.length;
+  let i = 1;
+  let coords = {
+    x: 0,
+    y: 0,
+    xFirst: true,
+    a: function(plus) {
+      if(this.xFirst) {
+        this.x += plus;
+      } else {
+        this.y += plus;
+      }
+      showRect(++i, this.x, this.y);
+    },
+    b: function(plus) {
+      if(this.xFirst) {
+        this.y += plus;
+      } else {
+        this.x += plus;
+      }
+      showRect(++i, this.x, this.y);
+    }
+  };
+  showRect(i, 0, 0);
+  for(let j = 1; j < length; j++) {
+    coords.a(1);
+    for(let k = 0; k < j; k++) {
+      coords.b(1);
+    }
+    for(let k = 0; k < j; k++) {
+      coords.a(-1);
+    }
+    coords.xFirst = !coords.xFirst;
+  }
+}
+
+function showRect(index, x, y) {
+  const mode = buttonMode.mode;
+  if(mode > 0) {
+    if(mode != (y+1)) return;
+  } else if(mode < 0) {
+    if(mode != (-x-1)) return;
+  }
+  const yOffset = height / 5;
+  const len = displayWidth / 20;
+  let xRect = len * x;
+  let yRect = len * y;
+  const length = buttonLength.length;
+  if(mode > 0) {
+    if(len * (length-1) > (width - len)) {
+      yRect += len * floor(xRect / width) - len * (mode - 1);
+      xRect = xRect % width;
+    }
+  }
+  if (mode < 0) {
+    if(len * (length-1) > (height - len - yOffset)) {
+      xRect += len * floor(yRect / (height - yOffset)) - len * (-mode - 1);
+      yRect = yRect % (height - yOffset);
+    }
+  }
+  yRect += yOffset;
+  fill(getColor(index));
+  rect(xRect, yRect, len, len);
+  fill(0);
+  textSize(width * 3 / 100);
+  text(str(getNumber(index)), xRect, yRect, len, len);
+}
+
+function getNumber(index) {
+  return index;
+  // return [1, 3, 5, 7][index % 4];
+}
+
+function getColor(index) {
+  const p = buttonP.p;
+  return color(360 - 360 * (index % p) / p, 100, 50);
+}
+
+const buttons = [];
+
+function addButton(
+  xPerc,
+  yPerc,
+  widthPerc,
+  heightPerc,
+  text,
+  active,
+  color,
+  onClick
+) {
+  const button = {
+    x: function () {
+      return (xPerc * width) / 100;
+    },
+    y: function () {
+      return (yPerc * height) / 100;
+    },
+    width: function () {
+      return (widthPerc * width) / 100;
+    },
+    height: function () {
+      return (heightPerc * height) / 100;
+    },
+    text: function () {
+      return text;
+    },
+    active: active,
+    color: color,
+    onClick: onClick,
+  };
+  buttons.push(button);
+  return button;
+}
+
+function mousePressed() {
+  for (let b of buttons) {
+    let onClick = b.onClick;
+    if (onClick && b.active) {
+      const mX = ((mouseX - b.x()) * 100) / b.width();
+      const mY = ((mouseY - b.y()) * 100) / b.height();
+      if (mX > 0 && mX < 100 && mY > 0 && mY < 100) {
+        b.onClick(mX, mY);
+      }
+    }
+  }
+}
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

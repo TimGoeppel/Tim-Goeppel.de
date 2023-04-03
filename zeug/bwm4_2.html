@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+	    <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> BWM Nr. 4 - 2 | Tim-Goeppel.de</title>
+        <meta name="author" content="Tim Göppel">
+        <meta name="description" content="Physik">
+        <meta property="og:title" content="Tim Göppel">
+        <meta property="og:description" content="Physik">
+		<script type="text/javascript" src="p5.min.js"></script>
+		<script type="text/javascript">
+let i = 10;
+
+function setup() {
+  createCanvas(1000, 1000);
+  background(220);
+  const data = getData();
+  console.log(data);
+  drawData(data[0], 0, 0, width, height / 2);
+  drawData(data[1], 0, height / 2, width, height / 2);
+}
+
+function draw() {}
+
+function drawData(data, x, y, w, h) {
+  fill(255);
+  const space = 0.2 * h;
+  const xStart = x + space;
+  const yStart = y + h - space;
+  const xEnd = x + w - space;
+  const yEnd = y + space; // somewhat irritating to call it "end", but whatever
+  const xMax = data.length + 1;
+  const yMax = max(max(data), -min(data));
+  const xUnit = (xEnd - xStart) / xMax;
+  const yUnit = (yStart - yEnd) / yMax + 2;
+  rect(x, y, w, h);
+  line(xStart, yStart, xEnd, yStart); // x axis
+  line(xStart, yEnd, xStart, yStart); // y axis
+  for (let j = 0; j < data.length; j++) {
+    circle(xStart + (j + 1) * xUnit, yStart - (data[j] + 1) * yUnit, 5);
+  }
+  fill(0);
+  textSize(20);
+  for(let j = 0; j < xMax; j+=round(0.8 * i)) {
+    text(j + 1, xStart + (j + 1) * xUnit, yStart, xUnit, yUnit * 2);
+  }
+  for(let j = 0; j < yMax; j++) {
+    text(round(yUnit * j * 10) / 10, x, yStart - j * yUnit, space, yUnit);
+  }
+}
+
+function getData() {
+  const dataX = [];
+  const dataY = [];
+  function showRect(x, y) {
+    dataX.push(x);
+    dataY.push(y);
+  }
+  let coords = {
+    x: 0,
+    y: 0,
+    xFirst: true,
+    a: function(plus) {
+      if(this.xFirst) {
+        this.x += plus;
+      } else {
+        this.y += plus;
+      }
+      showRect(this.x, this.y);
+    },
+    b: function(plus) {
+      if(this.xFirst) {
+        this.y += plus;
+      } else {
+        this.x += plus;
+      }
+      showRect(this.x, this.y);
+    }
+  };
+  showRect(0, 0);
+  for(let j = 1; j < i; j++) {
+    coords.a(1);
+    for(let k = 0; k < j; k++) {
+      coords.b(1);
+    }
+    for(let k = 0; k < j; k++) {
+      coords.a(-1);
+    }
+    coords.xFirst = !coords.xFirst;
+  }
+  return [dataX, dataY];
+}
+		</script>
+	</head>
+	<body>
+	</body>
+</html>
